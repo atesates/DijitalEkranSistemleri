@@ -1,0 +1,47 @@
+﻿@model YayinEkranDetay
+
+@{
+    ViewBag.Title = "Details";
+}
+
+
+<div>
+    <h4>Yayın Ekran Detaylar</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.EkranId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EkranId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EkranTasarimId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EkranTasarimId)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BaslamaZamani)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BaslamaZamani)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BitisZamani)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BitisZamani)
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit",null, new { id = Model.Id, @class = "btn btn-sm btn-success" }) 
+    @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn btn-sm btn-warning" })
+
+</p>

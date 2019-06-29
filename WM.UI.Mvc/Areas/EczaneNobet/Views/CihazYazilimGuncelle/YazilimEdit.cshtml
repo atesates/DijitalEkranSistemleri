@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "Cihaz Yazılım Güncelle";
+}
+
+<div class="page-header">
+    <h2>@ViewBag.Title</h2>
+</div>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data" }))//resim uploadı için
+{
+    <div class="form-group">
+        <input type="file" name="file" id="file" style="width: 100%;" />
+    </div>
+    <button class="btn btn-sm btn-primary" type="submit">Yükle</button>
+}
+
+    @if (TempData["MessageSuccess"] != null)
+    {
+        @*<p>&nbsp;</p>*@
+        <div class="alert alert-success">
+            <i class="fa fa-info-circle fa-x"></i>
+
+            @TempData["MessageSuccess"]
+        </div>
+    }
+    @if (TempData["MessageDanger"] != null)
+    {
+
+        <div class="alert alert-danger">
+            <i class="fa fa-info-circle fa-x"></i>
+
+            @TempData["MessageDanger"]
+        </div>
+    }
+
+
+
+
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

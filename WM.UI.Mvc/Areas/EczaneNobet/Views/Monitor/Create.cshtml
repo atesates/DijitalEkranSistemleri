@@ -1,0 +1,152 @@
+﻿@model Monitor
+
+@{
+    ViewBag.Title = "Monitör Ekle |  Dijital Ekran";
+}
+
+<h4>Monitör Ekle</h4>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="form-row">
+            <div class="form-group col-md-10">
+                @*@Html.LabelFor(model => model.Adi, "Eczane Adı", htmlAttributes: new { @class = "control-label" })*@
+                @Html.EditorFor(model => model.Adi, new { htmlAttributes = new { @class = "form-control", placeHolder = "Monitör Adı" } })
+                @Html.ValidationMessageFor(model => model.Adi, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group col-md-10">
+                Kullanıcı
+                @*@Html.LabelFor(model => model.NobetUstGrupId, "Üst Grup", htmlAttributes: new { @class = "control-label col-2" })*@
+                                    @Html.DropDownList("GrupId", null, htmlAttributes: new { @class = "form-control" })
+            </div>
+            <div class="form-group col-md-10">
+                @*@Html.LabelFor(model => model.AcilisTarihi, htmlAttributes: new { @class = "control-label" })*@
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text p-2">
+                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    @Html.TextBoxFor(model => model.Marka, new { @class = "form-control", autocomplete = "off", placeHolder = "Marka" })
+                </div>
+                @Html.ValidationMessageFor(model => model.Marka, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group col-md-10">
+                @*@Html.LabelFor(model => model.AcilisTarihi, htmlAttributes: new { @class = "control-label" })*@
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text p-2">
+                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    @Html.TextBoxFor(model => model.SeriNu, new { @class = "form-control", autocomplete = "off", placeHolder = "Seri Numarası" })
+                </div>
+                @Html.ValidationMessageFor(model => model.SeriNu, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group col-md-10">
+                @*@Html.LabelFor(model => model.KapanisTarihi, htmlAttributes: new { @class = "control-label" })*@
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text p-2">
+                            <i class="fa fa-tv" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    @Html.TextBoxFor(model => model.BoyutuInc, new { @class = "form-control", autocomplete = "off", placeHolder = "Boyut inç" })
+                </div>
+                @Html.ValidationMessageFor(model => model.BoyutuInc, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group col-md-10">
+                Alım Tarihi
+
+                @*@Html.LabelFor(model => model.TelefonNo, htmlAttributes: new { @class = "control-label" })*@
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text p-2">
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    @Html.EditorFor(model => model.AlimTarihi, new { htmlAttributes = new { @class = "form-control", placeHolder = "Alım Tarihi" } })
+                </div>
+                @Html.ValidationMessageFor(model => model.AlimTarihi, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group col-md-10">
+                Başlama Tarihi
+
+                @*@Html.LabelFor(model => model.MailAdresi, htmlAttributes: new { @class = "control-label" })*@
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text p-2">
+                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    @Html.EditorFor(model => model.BaslamaTarihi, new { htmlAttributes = new { @class = "form-control", placeHolder = "Başlama Tarihi" } })
+                </div>
+                @Html.ValidationMessageFor(model => model.BaslamaTarihi, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group col-md-10">
+                @*@Html.LabelFor(model => model.WebSitesi, htmlAttributes: new { @class = "control-label" })*@
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text p-2">
+                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    @Html.EditorFor(model => model.Aciklama, new { htmlAttributes = new { @class = "form-control", placeHolder = "Açıklama" } })
+                </div>
+                @Html.ValidationMessageFor(model => model.Aciklama, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group col-md-10">
+                <div class="form-group">
+                    @*@Html.LabelFor(model => model.NobetUstGrupId, "Üst Grup", htmlAttributes: new { @class = "control-label col-2" })*@
+                    @Html.DropDownList("CozunurlukId", null, htmlAttributes: new { @class = "form-control", style = "display:block;" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Ekle" class="btn btn-primary" />
+            @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn btn-warning" })
+        </div>
+
+    </div>
+    </div>
+
+        }
+        @section Styles{
+            @Styles.Render("~/bundle/bootstrap-datepicker/style")
+        }
+
+        @section Scripts{
+            @Scripts.Render("~/bundle/bootstrap-datepicker/scripts")
+            @Scripts.Render("~/bundle/ajax")
+            @*@Scripts.Render("~/bundle/validation/scripts")*@
+            @*@Scripts.Render("~/bundle/globalize/scripts")*@
+
+            <script>
+                $(function () {
+                    setTimeout(function () {
+                        $('.alert-success').addClass("elemaniUcur");
+                    }, 4000);
+                    setTimeout(function () {
+                        $('.alert-danger').addClass("elemaniUcur");
+                    }, 4000);
+                    //var d = new Date();
+                    //var strDate = d.getFullYear() + "." + (d.getMonth() + 1) + "." + d.getDate();
+                    //$("#AcilisTarihi").val(strDate);
+                    if ($("#NobetUstGrupId option").length > 1) {
+                        $("#NobetUstGrupId").show();
+                    }
+
+                    $("#Enlem").val(1);
+                    $("#Boylam").val(1);
+                });
+            </script>
+        }

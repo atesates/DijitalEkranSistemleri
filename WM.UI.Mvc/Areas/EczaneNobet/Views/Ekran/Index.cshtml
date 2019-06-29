@@ -1,0 +1,1158 @@
+﻿@model IEnumerable<EkranDetayYayinEkranDetayEkranTasarimIcerikDetaylarViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+@{
+    var postAjaxEkraniAktifYap = new AjaxOptions
+    {
+        AllowCache = false,
+
+        Url = Url.Action("SecilenleriAktifYap", "EkranTasarim"),
+        HttpMethod = "POST",
+        UpdateTargetId = "partialView",
+        InsertionMode = InsertionMode.Replace
+        //, LoadingElementId = "islem"
+    };
+    var postAjaxEkraniPasifYap = new AjaxOptions
+    {
+        AllowCache = false,
+
+        Url = Url.Action("SecilenleriPasifYap", "EkranTasarim"),
+        HttpMethod = "POST",
+        UpdateTargetId = "partialView",
+        InsertionMode = InsertionMode.Replace
+        //, LoadingElementId = "islem"
+    };
+    var postAjaxEkraniBitir = new AjaxOptions
+    {
+        AllowCache = false,
+
+        Url = Url.Action("SecilenleriPasifYap", "EkranTasarim"),
+        HttpMethod = "POST",
+        UpdateTargetId = "partialView",
+        InsertionMode = InsertionMode.Replace
+        //, LoadingElementId = "islem"
+    };
+    var postAjaxSilCoklu = new AjaxOptions
+    {
+        AllowCache = false,
+        Url = Url.Action("SecilenleriSil", "EkranTasarim"),
+        HttpMethod = "POST",
+        UpdateTargetId = "partialView",
+        InsertionMode = InsertionMode.Replace
+        //,LoadingElementId = "islem"
+    };
+    var getAjaxEkranTasarimlarim = new AjaxOptions
+    {
+        AllowCache = false,
+        Url = Url.Action("GetEkranTasarimlarim", "EkranTasarim"),
+        HttpMethod = "GET",
+        UpdateTargetId = "partialView",
+        InsertionMode = InsertionMode.Replace
+        //,LoadingElementId = "islem"
+    };
+    var postAjaxCihazDurumDegistir = new AjaxOptions
+    {
+        AllowCache = false,
+        Url = Url.Action("SetCihazDurum", "Ekran"),
+        HttpMethod = "POST",
+        UpdateTargetId = "partialView",
+        InsertionMode = InsertionMode.Replace
+        //,LoadingElementId = "islem"
+    };
+}
+<!-- Renk Modal -->
+<div class="modal fade modal-sm" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Açıklamalar</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6>Renklerin Anlamları:</h6>
+                <div class="arkaPlanRengiAktif">Cihaz Aktif</div>
+                <div class="arkaPlanRengiSayfayiYenile">Sayfanın yenilenmesi gerekiyor</div>
+                <div class="arkaPlanRengiSayfayiBastanBaslat">Sayfanın baştan açılması gerekiyor</div>
+                <div class="arkaPlanRengiCihaziYenidenBaslat">Cihazın baştan başlatılması gerekiyor</div>
+                <div class="arkaPlanRengiDomainDegisti">Domainin yenilenmesi gerekiyor</div>
+                <div class="arkaPlanRengiPingYok">Sinyal yok</div>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- tüm cihazları yenile Modal -->
+<div class="modal modal-sm" tabindex="-1" id="myCihazlariYenileModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Monitörleri yenile?
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Yenile'ye basarsanız tüm monitörler tekrar başlatılcak, bu işlem nöbet değişikliği gibi durumlarda
+                    tüm monitörlerin verilerini baştan yüklemek için kullanılır.
+                    Monitörlere görüntünün gelmesi 10 sn. den az sürer.
+                    Yenilemek istediğinize emin misiniz?
+                </p>
+            </div>
+            <div class="modal-footer">
+                @*@Html.ActionLink("Sil", "Delete", "Alimim", new { area = "Kullanici" }, new { @class = "btn btn-outline-danger", id = "ConfirmSubmitSil" })*@
+                <a href="#" id="TumunuYenile" data-dismiss="modal" aria-hidden="true" class="btn btn-success">Yenile</a>
+
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-secondary">Vazgeç</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #region Sil modal -->
+<div class="modal modal-sm" tabindex="-1" id="mySilModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Sil
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Silmek istediğinize emin misiniz?</p>
+            </div>
+            <div class="modal-footer">
+                @*@Html.ActionLink("Sil", "Delete", "Alimim", new { area = "Kullanici" }, new { @class = "btn btn-outline-danger", id = "ConfirmSubmitSil" })*@
+                <a href="#" id="ConfirmSubmitSil" data-dismiss="modal" aria-hidden="true" class="btn btn-danger">Sil</a>
+
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-secondary">Hayır</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #region Cihaz Durum Değiştir modal -->
+<div class="modal modal-sm" tabindex="-1" id="myCihazDurumModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Cihaz Durum Değiştir
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+      
+            <div class="modal-body">
+
+                @*@using (Ajax.BeginForm(null, null, postAjaxALD, new { id = "formALD" }))
+        {*@
+                @*  @Html.AntiForgeryToken()*@
+                @Html.Hidden("EkranIDForCHD")
+                @Html.Hidden("CihazDurumIDForCHD")
+                <div style="display:none">
+                    @*  @Html.TextArea("ExpandedForCHD")*@
+                </div>
+                <div id="ddlCihazDurumu" class="form-group mr-3">
+                    @Html.DropDownList("CihazDurumId", null, htmlAttributes: new
+                    {
+                        @class = "form-control",
+                        @id = "cihazDurumId"
+                        ,
+                        onchange = "myFunction(event)"
+                    }, optionLabel: "---Cihaz Durumu Seç---"
+                       )
+                </div>
+                @*}*@
+            </div>
+                <div class="modal-footer">
+                    @*@Html.ActionLink("Sil", "Delete", "Alimim", new { area = "Kullanici" }, new { @class = "btn btn-outline-danger", id = "ConfirmSubmitSil" })*@
+                    <a href="#" id="ConfirmSubmitCHD" data-dismiss="modal" class="btn btn-sm btn-success" aria-hidden="true">Kaydet</a>
+                    <a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-secondary">
+                        Vazgeç
+                    </a>
+                </div>
+           
+        </div>
+    </div>
+</div>
+@*----------------loading gif--------------------*@
+<div class="row">
+    <div class="col-lg-3">
+    </div>
+    <div class="col-lg-4">
+        <div id="loading" align="center" style="margin-top: 10%">
+            <img src="~/Content/images/orig.gif" />
+        </div>
+    </div>
+    <div class="col-lg-4">
+    </div>
+</div>
+
+<div class="row justify-content-between mb-2">
+    <div class="col-md-4 mb-2">
+
+        <div class="form-inline">
+            <h4 class="mr-5">Ekranlarım</h4>
+            <div class="form-group">
+                <a class="btn btn-outline-success btn-sm" href="@Url.Action("Create", null, new { area= "EczaneNobet" })"><span class="fa fa-plus"></span> Yeni Kayıt</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-3">
+        <div>
+            <button type="button" class="btn btn-info " data-toggle="modal" data-target="#myCihazlariYenileModal">Tüm Cihazları Yenile</button>
+        </div>
+    </div>
+</div>
+
+<div id="div1" style="visibility:hidden">
+    <div id="main" class="col-12">
+        <div id="partialView" class="row sayfaPartialBolum">
+            <table class="table table-hover table-responsive" id="gridT">
+                <thead class="thead-light">
+                    <tr>
+                        @*<th  width="5%" id="hepsiniAcKapa" class="hoverEffforHeader collapsemForHeader">
+        </th>*@
+                        <th></th>
+                        @*<th>
+            @Html.DisplayNameFor(model => model.EkranDetay.Id)
+        </th>*@
+                        <th>
+                            @Html.DisplayNameFor(model => model.EkranDetay.MonitorAdi)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EkranDetay.CihazDurumAdi)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EkranDetay.EkranUrl)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EkranDetay.CihazSeriNu)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EkranDetay.GrupAdi)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EkranDetay.KonumAdi)
+                        </th>
+                        <th></th>
+                        <th>
+                            İşlem
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model)
+                {
+                <tr id="nester_@item.EkranDetay.Id" class="tableRowDesign">
+                    <td width="2%"></td>
+                    @*<td width="5%">
+            @Html.DisplayFor(modelItem => item.EkranDetay.Id)
+        </td>*@
+                    <td width="10%">
+                        @Html.DisplayFor(modelItem => item.EkranDetay.MonitorAdi)
+                    </td>
+                    <td style="cursor: pointer; color:blue; width:12%" id="chd_@item.EkranDetay.Id">
+                        @Html.DisplayFor(modelItem => item.EkranDetay.CihazDurumAdi)
+                    </td>
+                    <td width="13%">
+                        <a target="_blank" href="@Html.DisplayFor(modelItem => item.EkranDetay.EkranUrl)"> @Html.DisplayFor(modelItem => item.EkranDetay.EkranUrl)</a>
+                    </td>
+                    <td width="11%">
+                        @Html.DisplayFor(modelItem => item.EkranDetay.CihazSeriNu)
+                    </td>
+                    <td width="9%">
+                        @Html.DisplayFor(modelItem => item.EkranDetay.GrupAdi)
+                    </td>
+                    <td width="20%">
+                        @Html.DisplayFor(modelItem => item.EkranDetay.KonumAdi)
+                    </td>
+                    <td width="5%">
+                        @{
+                            var target = $"#islem{@item.EkranDetay.Id}";
+                        }
+                        <button class="btn btn-sm btn-secondary d-sm-block d-md-none" type="button" data-toggle="collapse" data-target="@target" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="fa fa-cog"></span>
+                        </button>
+                    </td>
+                    <td width="20%">
+                        <a class="btn btn-outline-success py-0 btn-sm" title="Bilgi Düzenle" href="@Url.Action("Edit", "Ekran", new { id = item.EkranDetay.Id, area= "EczaneNobet" })"><span class="fa fa-edit"></span></a>
+                        <a class="btn btn-outline-danger py-0 btn-sm" title="Sil" href="@Url.Action("Delete", "Ekran", new { id = item.EkranDetay.Id, area= "EczaneNobet" })"><span class="fa fa-trash"></span></a>
+                        <a class="btn btn-outline-primary py-0 btn-sm" title="Detyalar" href="@Url.Action("Details", "Ekran", new { id = item.EkranDetay.Id, area= "EczaneNobet" })"><span class="fa fa-info-circle"></span></a>
+                        <a class="btn btn-outline-dark py-0 btn-sm" title="Yayın Ekran Oluştur" href="@Url.Action("Create", "YayinEkran", new { id = item.EkranDetay.Id, area= "EczaneNobet" })"><span class="fa fa-plus"></span> <span class="fa fa-tv"></span></a>
+
+                    </td>
+                    <td>
+                        <table class="table table-sm table-hover" id="gridT2">
+                            <thead class="thead-light">
+                                <tr class="tableRowDesign">
+                                    <th></th>
+                                    @*<th id="hepsiniAcKapa" class="hoverEffforHeader collapsemForHeader">
+
+                        </th>*@
+                                    @*<th>
+                            <input class="" id="checkAll" type="checkbox" />
+                        </th>*@
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.YayinEkranDetayEkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().YayinEkranDetay.EkranTasarimAdi)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.YayinEkranDetayEkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().YayinEkranDetay.BaslamaZamaniString)
+                                    </th>
+
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.YayinEkranDetayEkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().YayinEkranDetay.EkranTasarimSonDegisiklikTarihiString)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.YayinEkranDetayEkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().YayinEkranDetay.BitisZamaniString)
+                                    </th>
+
+                                    <th>
+
+                                    </th>
+                                    <th>
+                                        İşlem
+
+                                    </th>
+                                    <th>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="eczaneIcTablo">
+                                @foreach (var item2 in item.YayinEkranDetayEkranTasarimIcerikDetaylarViewModeller)
+                                {
+                                    <tr id="nester2_@item2.YayinEkranDetay.Id" class="tableRowDesign">
+                                        <td width="10%"></td>
+                                        @*<td>
+                                <input class="gridCheckBox" id="ekranTasarimDetay_@item.EkranTasarimDetay.Id"
+                                       value="@item.EkranTasarimDetay.Id" type="checkbox" />
+                            </td>*@
+                                        <td width="10%">
+                                            @Html.DisplayFor(modelItem => item2.YayinEkranDetay.EkranTasarimAdi)
+                                        </td>
+                                        <td width="10%">
+                                            @Html.DisplayFor(modelItem => item2.YayinEkranDetay.BaslamaZamaniString)
+                                        </td>
+                                        <td width="15%">
+                                            @Html.DisplayFor(modelItem => item2.YayinEkranDetay.EkranTasarimSonDegisiklikTarihiString)
+                                        </td>
+                                        <td width="15%">
+                                            @Html.DisplayFor(modelItem => item2.YayinEkranDetay.BitisZamaniString)
+                                        </td>
+
+
+                                        <td width="5%">
+                                            @{
+                                                var target2 = $"#islem{@item2.YayinEkranDetay.Id}";
+                                            }
+                                            <button class="btn btn-sm btn-secondary d-sm-block d-md-none" type="button" data-toggle="collapse" data-target="@target2" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+                                                <span class="fa fa-cog"></span>
+                                            </button>
+                                        </td>
+                                        <td width="35%">
+                                            <div class="collapse d-md-block" id="@target.Remove(0, 1)">
+                                                <a class="btn btn-outline-success py-0 btn-sm" title="Bilgi Düzenle" href="@Url.Action("Edit", "EkranTasarim", new { id = item2.EkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranTasarimDetay.Id, area= "EczaneNobet" })"><span class="fa fa-edit"></span></a>
+                                                <a class="btn btn-outline-danger py-0 btn-sm" title="Sil" href="@Url.Action("Delete", "EkranTasarim", new { id = item2.EkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranTasarimDetay.Id, area= "EczaneNobet" })"><span class="fa fa-trash"></span></a>
+                                                <a class="btn btn-outline-primary py-0 btn-sm" title="Detyalar" href="@Url.Action("Details", "EkranTasarim", new { id = item2.EkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranTasarimDetay.Id, area= "EczaneNobet" })"><span class="fa fa-info-circle"></span></a>
+                                                <a class="btn btn-outline-dark py-0 btn-sm" title="Ekran Düzenle" href="@Url.Action("Index", "EkranDigitalYonetim", new { ekranTasarimId = item2.EkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranTasarimDetay.Id, area= "EczaneNobet" })"><span class="fa fa-tv"></span></a>
+                                                @* <a class="btn btn-outline-secondary py-0 btn-sm" title="Mevcut İçeriklerden Ekle" href="@Url.Action("Index", "EkranIcerik", new { ekranTasarimId = item.EkranTasarimDetay.Id, area= "EczaneNobet" })"> <span class="fa fa-image"></span> </a>*@
+                                                <a class="btn btn-outline-info py-0 btn-sm" title="Yeni İçerik Oluştur" href="@Url.Action("Create", "EkranIcerik", new { ekranTasarimId = item2.EkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranTasarimDetay.Id, area= "EczaneNobet" })"><span class="fa fa-plus"></span> <span class="fa fa-image"></span> </a>
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <table class="table table-sm table-hover" id="subT2">
+                                                <thead class="thead-light tableInnerRowDesign">
+                                                    <tr>
+                                                        <th>
+
+                                                        </th>
+
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.FirstOrDefault().YayinEkranDetayEkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranIcerikDetaylar.FirstOrDefault().Adi)
+                                                        </th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.FirstOrDefault().YayinEkranDetayEkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranIcerikDetaylar.FirstOrDefault().Url)
+                                                        </th>
+                                                        <th>
+                                                            @Html.DisplayNameFor(model => model.FirstOrDefault().YayinEkranDetayEkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranIcerikDetaylar.FirstOrDefault().Uzanti)
+                                                        </th>
+                                                        <th>
+                                                            İşlem
+                                                        </th>
+                                                        <th>
+                                                            Dosya Yükleme
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var subItem in item2.EkranTasarimIcerikDetaylarViewModeller.FirstOrDefault().EkranIcerikDetaylar)
+                                                    {
+                                                        <tr class="tableInnerRowDesign" name="subtr2_@subItem.Id ">
+                                                            <td width="2%">
+                                                                @*<input class="subGridCheckBox" id="ekranTasarimDetay_@subItem.Id"
+                                                    value="@subItem.Id" type="checkbox" />*@
+                                                            </td>
+
+                                                            <td style="width:18%">
+                                                                @Html.DisplayFor(model => subItem.Adi)
+                                                            </td>
+                                                            <td style="width:30%">
+                                                                @Html.DisplayFor(model => subItem.Url)
+                                                            </td>
+                                                            <td style="width:5%">
+                                                                @Html.DisplayFor(model => subItem.Uzanti)
+                                                            </td>
+                                                            <td style="width:10%">
+                                                                <div class="collapse d-md-block" id="@target.Remove(0, 1)">
+                                                                    <a class="btn btn-outline-success py-0 btn-sm" title="Bilgi Düzenle" href="@Url.Action("Edit", "EkranIcerik", new { id = subItem.Id, area= "EczaneNobet" })"><span class="fa fa-edit"></span></a>
+                                                                    <a class="btn btn-outline-danger py-0 btn-sm" title="Sil" href="@Url.Action("Delete", "EkranIcerik", new { id = subItem.Id, area= "EczaneNobet" })"><span class="fa fa-trash"></span></a>
+                                                                    @*<a class="btn btn-outline-primary py-0 btn-sm" title="Foto Düzenle" href="@Url.Action("ResimEdit", "EkranIcerik", new { @Id = subItem.Id })"><span class="fa fa-photo"></span> </a>*@
+                                                                </div>
+                                                            </td>
+                                                            <td style="width:35%">
+                                                                @if (subItem.Uzanti == "png" || subItem.Uzanti == "jpg" || subItem.Uzanti == "jpeg")
+                                                                {
+                                                                    using (Html.BeginForm("ResimEdit", "EkranIcerik", FormMethod.Post, new { @enctype = "multipart/form-data" }))//resim uploadı için
+                                                                    {
+
+                                                                        @Html.Hidden("EkranIcerikid", subItem.Id)
+
+                                                                        <input class="btn btn-sm btn-outline-primary" type="file" name="file" id="file" style="width: 60%;" />
+                                                                        <button class="btn btn-sm btn-primary" type="submit">Yükle</button>
+                                                                    }
+                                                                }
+                                                            </td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                }
+            </table>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" aria-label="...">
+                <ul class="navbar-nav">
+                    <li class="nav-link" id="myPaging">
+                    </li>
+                </ul>
+                <div class="nav-item">
+                    <span id="toplamKayitSayisi"></span>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+<div class="col-12">
+    @if (TempData["MessageSuccess"] != null)
+    {
+        @*<p>&nbsp;</p>*@
+        <div class="alert alert-success">
+            <i class="fa fa-info-circle fa-x"></i>
+
+            @TempData["MessageSuccess"]
+        </div>
+    }
+    @if (TempData["MessageDanger"] != null)
+    {
+
+        <div class="alert alert-danger">
+            <i class="fa fa-info-circle fa-x"></i>
+
+            @TempData["MessageDanger"]
+        </div>
+    }
+
+
+</div>
+@section Styles{
+    @Styles.Render("~/bundle/jqueryui/style")
+}
+@section Scripts{
+    @Scripts.Render("~/bundle/queryui/scripts")
+    @Scripts.Render("~/bundle/ajax")
+    @Scripts.Render("~/bundle/pager")
+
+
+    <script>
+        setTimeout(function () {
+            $('.alert-success').addClass("elemaniUcur");
+        }, 2000);
+        setTimeout(function () {
+            $('.alert-danger').addClass("elemaniUcur");
+        }, 2000);
+        //-----tekli sil-----
+        $('#ConfirmSubmitSil').click(function () {
+            // alert($("#Id").val());
+            $('#formSil').submit();
+            alert("silindi")
+            //location.reload();
+        });
+
+        function checkEdilenCeheckBoxlariHiddenFieldeAktar() {
+            // alert('aktif.click');
+            var selectedIDs = new Array();
+            var subGridSeletedeIDs = new Array();
+            $('input:checkbox.gridCheckBox').each(function () {
+                if ($(this).prop('checked')) {
+                    selectedIDs.push($(this).val());
+                }
+            });
+            //$('input:checkbox.subGridCheckBox').each(function () {
+            //    if ($(this).prop('checked')) {
+            //        subGridSeletedeIDs.push($(this).val());
+            //    }
+            //});
+            var toplamString = selectedIDs + ";" + subGridSeletedeIDs
+            $("#secilenEkranTasarimlar").val(toplamString);
+            //alert('secilenEkranTasarimlar :' + $("#secilenEkranTasarimlar").val());
+            $("#ExpandedForSil").val($("#expandedList").val());
+            //alert('ExpandedForSil :' + $("#ExpandedForSil").val());
+        }
+
+        //alert('0')
+
+        var model = @Html.Raw(Json.Encode(Model));
+        //alert('1')
+        //--------------Cihaz Durumu----------------------
+        $('#ConfirmSubmitCHD').click(function () {
+            postCihazDurum()
+        });
+        //--------------Cihaz Durumu----------------------
+        $('#TumunuYenile').click(function () {
+            postCihazDurumTumunuYenile()
+        });
+        //------------------searching-----------------
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLocaleLowerCase('tr-TR');
+            $("#gridT tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLocaleLowerCase('tr-TR').indexOf(value) > -1);
+            });
+            if ($(this).val().length == 0) {
+                afterSearchingSetExpand()
+                getPaging($("#page").val())
+            }
+        });
+        $("#myInputForSubGrid").on("keyup", function () {
+            //arama başlayınca tüm alt satırları aç
+            $("#main #gridT > tbody > tr td.collapsem").each(function (i, el) {
+                $(this).parent().closest("tr").next().slideToggle(1);
+                $(this).toggleClass("expandm collapsem");
+            });
+            //eşleşmeyen satırları kapat
+            var value = $(this).val().toLocaleLowerCase('tr-TR');
+            $("#subT tbody tr").filter(function () {
+                $(this).toggle($(this).text().toLocaleLowerCase('tr-TR').indexOf(value) > -1);
+            });
+            //arama bitince yani arama kelimesi uzunluğu sıfır olunca tüm açılan satırları kapat
+            if ($(this).val().length == 0) {
+                $("#main #gridT > tbody > tr td.expandm").each(function (i, el) {
+                    $(this).toggleClass("expandm collapsem");
+                    $(this).parent().closest("tr").next().slideToggle(1);
+                });
+            }
+            //alım aramasında satırların hepsini açıp aramadan önceki durumu kaybettiğimiz için aramadan önceki hale dönemedik
+        });
+        //alert('2')
+
+        function afterSearchingSetExpand() {
+            alert('afterSearchingSetExpand')
+
+            $("#main #gridT > tbody > tr td.collapsem").each(function (i, el) {
+                var compareString = model[i].EkranTasarimDetay.Expanded;
+                alert(compareString)
+                if (!compareString) {
+                    //kapalıysa, default açık geri geldiği için kapatsın, açıksa açık kalsın
+                    $(this).parent().closest("tr").next().slideToggle(1);
+                }
+                else {//açıksa, default + geri geldiğin için - yapsın,
+                    $(this).toggleClass("collapsem expandm");
+                }
+            });
+            // daha sonradan yapılan değişiklik sebebiyle subGrid de veri olmayan başlıklar da kapansın aramadan sonra:
+            $("#main #gridT > tbody > tr td.expand").each(function (i, el) {
+                $(this).parent().closest("tr").next().slideToggle(1);
+            });
+            //getPaging(model[0].Pager.CurrentPage)
+
+        }
+        //alert('3')
+        var expandedIDs = new Array();
+        var expandedIDs2 = new Array();
+        //alert('4')
+        $("#checkAll").click(function () {//başlıktaki check ile tüm teklifler check edilir, alımlar edilmez
+            $(".gridCheckBox").prop('checked',
+                $(this).prop('checked'));
+            //$(".subGridCheckBox").prop('checked',
+            //    $(this).prop('checked'));
+        });
+        //alert('5')
+        //header hepsini açıp kapatır
+        $(".hoverEffforHeader").click(function () {
+            var compareStringForClass = $(this).attr("class");
+            //alert('compareStringForClass: ' + compareStringForClass)
+
+            if (compareStringForClass == "hoverEffforHeader collapsemForHeader") {
+                $("#main #gridT > tbody > tr td.collapsem").each(function (i, el) {
+                    $(this).parent().closest("tr").next().slideToggle(100);
+                    $(this).toggleClass("expandm collapsem");
+
+                });
+            }
+            else {
+                $("#main #gridT > tbody > tr td.expandm").each(function (i, el) {
+                    $(this).parent().closest("tr").next().slideToggle(100);
+                    $(this).toggleClass("expandm collapsem");
+
+                });
+
+            }
+            $(this).toggleClass("expandmForHeader collapsemForHeader");
+        });
+        veriyiGizleLoadingGifiGoster();
+        //alert('6')
+        createNestedTable();
+         // checkBeforeChecked();
+        function myFunction() {
+            //alert('myFunction')
+            $("#CihazDurumIDForCHD").val($('#cihazDurumId').val())
+
+        }
+        function createNestedTable() {
+            //nested table
+            //alert('createNestedTable')
+            //alt satırlar arka plan rengi
+            $("#main #gridT > tbody > tr").each(function (i, el) {//i 11 ??
+                $("#main #subT > tbody > tr").each(function (i, el) {
+                    var subTr_id = $(this).attr('name')
+                    //alert('subTr_id: ' + subTr_id)
+                    var id = subTr_id.substr(6, subTr_id.length - 6);
+                });
+            });
+            var size = $("#main #gridT > thead > tr > th").length; // get total column
+            //console.log('model.length: ' + model.length);
+            console.log('gridT size: ' + size);
+            $("#main #gridT > thead > tr > th").last().remove(); // remove last column
+            $("#main #gridT > thead > tr").prepend("<th></th>"); // add one column at first for collapsible column
+
+            $("#main #gridT > tbody > tr").each(function (i, el) {
+                $(this).addClass("gridtr")
+                console.log('loop: ')
+
+                console.log('i: ' + i)
+                var EkranDetayId = model[i].EkranDetay.Id
+                console.log('EkranDetayId: ' + EkranDetayId)
+                //alert('model[i].EkranIcerikDetaylar[0]: ' + model[i].EkranIcerikDetaylar[0])
+                //satırların arka plan renkleri
+                //if (model[i].EkranDetay.BitisTarihi == null)
+                //    $(this).addClass("arkaPlanRengiAktif")
+                //else
+                //    $(this).addClass("arkaPlanRengiPasif")
+                if (model[i].YayinEkranDetayEkranTasarimIcerikDetaylarViewModeller) {//alt satırda veri varsa
+                    $(this).prepend(
+                        $("<td id=\"" + EkranDetayId + "\" ></td>")//sytle=\"width:150px\"
+                            .addClass("expandm")
+                            .addClass("hoverEff")
+                        // .attr('title', "Bu tekliften yapılan diğer alimlar için tıklayınız")
+                    );
+                    //alert('if model[i].EkranIcerikDetaylar[0]: ' + model[i].EkranIcerikDetaylar[0])
+
+                }
+                else {
+                    $(this).prepend(
+                        $("<td id=\"" + EkranDetayId + "\" ></td>")//sytle=\"width:150px\"
+                            .addClass("expand")
+                        //.addClass("hoverEff")
+                        // .attr('title', "Bu tekliften yapılan diğer alimlar için tıklayınız")
+                    );
+                    //alert('else model[i].EkranIcerikDetaylar[0]: ' + model[i].EkranIcerikDetaylar[0])
+                }
+                //Now get sub table from last column and add this to the next new added row
+                var table = $("table", this).parent().html();
+                //add new row with this subtable
+                //alert('model[i].EkranIcerikDetaylar[0].Miktar: ' + model[i].EkranIcerikDetaylar[0])
+                //if (model[i].EkranIcerikDetaylar[0])
+                $(this).after("<tr><td></td><td  style='padding:5px; margin:0px; font-size:smaller;' colspan='" + (size - 1) + "'>" + table + "</td></tr>");
+                $("table", this).parent().remove();
+
+
+            });
+            //by default make all subgrid in collapse mode
+            //alert('main')
+
+            //$("#main #gridT > tbody > tr td.expand").each(function (i, el) {
+            //    $(this).parent().closest("tr").next().slideToggle(1);
+            //});
+            $("#main #gridT > tbody > tr td.expandm").each(function (i, el) {
+                $(this).toggleClass("expandm collapsem");
+                $(this).parent().closest("tr").next().slideToggle(1);
+                //alert('i: ' + i)
+                var compareString2 = model[i].EkranDetay.Expanded;//grid de genişletilmiş satırlar genişletilmiş gösterilir
+                //alert('compareString2: ' + compareString2)
+                // alert('model[i].EkranTasarimDetay.Id : ' + model[i].EkranTasarimDetay.Id)
+
+                if (true == compareString2) {
+                    //alert('if true model[i].TeklifDetay.Id: ' + model[i].TeklifDetay.Id)
+                    expandedIDs.push(model[i].EkranDetay.Id);
+                    $("#expandedList").val(expandedIDs);
+
+                    $(this).toggleClass("expandm collapsem");
+                    $(this).parent().closest("tr").next().slideToggle(1);
+                }
+            });
+            //set what to do + and - icons
+            //alert('hoverEff')
+
+            $("#gridT2 > tbody > tr").each(function (j, el) {//j 11 ??
+                $(" #subT2 > tbody > tr").each(function (j, el) {
+                    var subTr_id2 = $(this).attr('name')
+                    //alert('subTr2_id: ' + subTr_id)
+                    var id = subTr_id2.substr(6, subTr_id2.length - 6);
+                });
+            });
+
+            //console.log('size2: ' + size2);
+            $("#gridT2 > thead > tr > th").last().remove(); // remove last column
+            $("#gridT2 > thead > tr").prepend("<th></th>"); // add one column at first for collapsible column
+
+            $("#gridT2 > tbody > tr").each(function (j, el) {
+                //var modelSize = model[i].YayinEkranDetayEkranTasarimIcerikDetaylarViewModel.length
+                //console.log('modelSize: ' + modelSize);
+                console.log('j: ' + j);
+                //if (modelSize == j)
+                    //return false;
+                $(this).addClass("gridTr")
+               // var ekranTasarimDetayId = model[i].EkranTasarimIcerikDetaylarViewModeller[j].EkranTasarimDetay.Id
+               // console.log('model[i].EkranTasarimIcerikDetaylarViewModeller[j].EkranTasarimDetay.Id: ' + model[i].EkranTasarimIcerikDetaylarViewModeller[j].EkranTasarimDetay.Id)
+                var ekranTasarimDetayId = j
+                if (true) {//(model[i].YayinEkranDetayEkranTasarimIcerikDetaylarViewModeller[j].EkranIcerikDetaylar) {//alt satırda veri varsa
+                    $(this).prepend(
+                        $("<td id=\"" + ekranTasarimDetayId + "\" ></td>")//sytle=\"width:150px\"
+                            .addClass("expandm2")
+                            .addClass("hoverEff2")
+                        // .attr('title', "Bu tekliften yapılan diğer alimlar için tıklayınız")
+                    );
+                    //alert('if model[j].EkranIcerikDetaylar[0]: ' + model[j].EkranIcerikDetaylar[0])
+                    //console.log('if')
+                    //console.log($(this).attr('name'))
+                }
+                else {
+                    $(this).prepend(
+                        $("<td id=\"" + ekranTasarimDetayId + "\" ></td>")//sytle=\"width:150px\"
+                            .addClass("expand2")
+                        //.addClass("hoverEff")
+                        // .attr('title', "Bu tekliften yapılan diğer alimlar için tıklayınız")
+                    );
+                    //alert('else model[j].EkranIcerikDetaylar[0]: ' + model[j].EkranIcerikDetaylar[0])
+                    //console.log('else')
+
+                }
+                //console.log('2')
+                //Now get sub table from last column and add this to the next new added row
+                var table2 = $("table", this).parent().html();
+                //add new row with this subtable
+                $(this).after("<tr><td></td><td  style='padding:5px; margin:0px; font-size:smaller;' colspan='" + (size - 1) + "'>" + table2 + "</td></tr>");
+               // $(this).after("<tr><td></td><td  style='padding:5px; margin:0px; font-size:smaller;' colspan='" + (size2 - 1) + "'>" + table2 + "</td></tr>");
+                $("table", this).parent().remove();
+                //console.log('3')
+                //by default make all subgrid in collapse mode
+                //$("#gridT2 > tbody > tr td.expand2").each(function (j, el) {
+                //    $(this).parent().closest("tr").next().slideToggle(1);
+                //});
+                $("#gridT2 > tbody > tr td.expandm2").each(function (j, el) {
+                    $(this).toggleClass("expandm2 collapsem2");
+                    //$(this).parent().closest("tr").next().slideToggle(1);
+                    //alert('j: ' + j)
+                    //var compareString2 = model[i].EkranTasarimIcerikDetaylarViewModeller[j].EkranTasarimDetay.Expanded;//grid de genişletilmiş satırlar genişletilmiş gösterilir
+                    //alert('compareString2: ' + compareString2)
+                    // alert('model[j].EkranTasarimDetay.Id : ' + model[j].EkranTasarimDetay.Id)
+                    var compareString2 = false
+                    if (true == compareString2) {
+                        //alert('if true model[j].TeklifDetay.Id: ' + model[j].TeklifDetay.Id)
+                       // expandedIDs2.push(model[i].EkranTasarimIcerikDetaylarViewModeller[j].EkranTasarimDetay.Id);
+                        $("#expandedList").val(expandedIDs2);
+
+                        $(this).toggleClass("expandm2 collapsem2");
+                        $(this).parent().closest("tr").next().slideToggle(1);
+                    }
+                });
+            });
+
+            $('.hoverEff').click(function () {
+                $(this).parent().closest("tr").next().slideToggle(100);
+                $(this).toggleClass("expandm collapsem");
+
+                var id = $(this).attr("id");
+                //alert('$(this).attr("id"): ' + id);
+                var compareStringForClass = $(this).attr("class");
+                //alert('compareStringForClass: ' + compareStringForClass)
+                if (compareStringForClass == "hoverEff expandm") {
+                    //alert('if')
+                    expandedIDs.push(id);
+                }
+                else {
+                    //alert('else')
+                    expandedIDs.pop(id);
+                }
+                $("#expandedList").val(expandedIDs);
+                // alert('expandedList :' + $("#expandedList").val());
+            });
+
+            $('.hoverEff2').click(function () {
+                $(this).parent().closest("tr").next().slideToggle(100);
+
+                $(this).toggleClass("expandm2 collapsem2");
+
+                var id = $(this).attr("id");
+                //alert('$(this).attr("id"): ' + id);
+                var compareStringForClass = $(this).attr("class");
+                //alert('compareStringForClass: ' + compareStringForClass)
+                if (compareStringForClass == "hoverEff2 expandm2") {
+                    //alert('if')
+                    expandedIDs.push(id);
+                }
+                else {
+                    //alert('else')
+                    expandedIDs.pop(id);
+                }
+                $("#expandedList").val(expandedIDs);
+                // alert('expandedList :' + $("#expandedList").val());
+            });
+        }
+        function veriyiGizleLoadingGifiGoster() {
+            document.getElementById("loading").style.visibility = "visible";//sayfa yüklenirken loading gif i gösterilir
+            document.getElementById("div1").style.visibility = "hidden";//sayfa yüklenirken tablo gizlenir
+            //  document.getElementById("div_searching").style.visibility = "hidden";//sayfa yüklenirken tablo gizlenir
+            acilisiGeciktir()
+            //  loadingGifiGizleVeriyiGoster()
+        }
+        function acilisiGeciktir() {
+            setTimeout(
+                loadingGifiGizleVeriyiGoster, /* Request next message  */
+                1 /* ..after ms seconds */
+            );
+        }
+        function loadingGifiGizleVeriyiGoster() {
+            document.getElementById("div1").style.visibility = "visible";//tablo gösterilir
+            // document.getElementById("div_searching").style.visibility = "visible";//sayfa yüklenirken tablo gizlenir
+            document.getElementById("loading").style.visibility = "hidden";//gif gizlenir
+            document.getElementById("loading").style.display = "none";//gif yer kaplamasın
+        }
+        function checkBeforeChecked() {
+            //alert(JSON.stringify(model));
+            // alert(model.length);
+            for (var i = 0; i < model.length; i++) {
+                var compareString = model[i].EkranTasarimDetay.Checked;//grid için bir önceki işlemden check edilenler alınır ve true ise check edilir
+                //  alert(compareString)
+                if (true == compareString) { //compare to the checkbox value
+                    document.getElementById('ekranTasarimDetay_' + model[i].EkranTasarimDetay.Id).checked = true;
+                    //continue;
+                }
+
+                //for (var j = 0; j < model[i].EkranIcerikDetaylar.length; j++) {//subgrid için aynı işlem tekrarlanır
+                //    var compareString3 = model[i].EkranIcerikDetaylar[j].Checked;
+                //    //alert('compareString3: ' + compareString3)
+                //    if (true == compareString3) {
+                //        document.getElementById('ekranTasarimDetay_' + model[i].EkranIcerikDetaylar[j].Id).checked = true;
+                //        //alert(document.getElementById('ekranTasarimDetay_' + model[i].EczaneGrupDetaylar[j].Id).checked)
+                //        continue;
+                //    }
+                //}
+            }
+        }
+
+        $('.tekliSil').on('click', function (e) {
+            //alert('danger');
+            e.preventDefault();
+            //alert(this.id)
+            var sil_id = this.id;
+            var id = sil_id.substr(4, sil_id.length - 4);
+            //alert(id);
+            $("#Id").val(id);
+            //alert($("#Id").val());
+        });
+        //$("#main #gridT > tbody > tr > td ").dblclick(function () {//başlıktaki check ile tüm teklifler check edilir, alımlar edilmez
+
+        //    // alert('cell Clicked')
+        //    var subTr_id = this.id;
+        //    // alert('subTr_id: ' + subTr_id)
+
+        //    var id = subTr_id.substr(4, subTr_id.length - 4);
+        //    var alanAdi = subTr_id.substr(0, 3);
+        //    if (alanAdi == "dgt") {
+        //        $('#TeklifVerenEczaneGrupIdForDaGiTiCi').val(id);//indexte
+        //        getDagitici()
+        //        $('#myDagiticiModal').modal('toggle');
+        //    }
+        //    else if (alanAdi == "ald") {
+        //        $('#AlimIDForALD').val(id);
+        //        $('#myALDModal').modal('toggle');
+        //    }
+        //    else if (alanAdi == "its") {
+        //        $('#AlimIDForITS').val(id);
+        //        $('#myITSModal').modal('toggle');
+        //    }
+        //    else {
+        //        // alert('Bu alanı değiştiremezsiniz');
+        //    }
+
+        //});
+
+        function getAlimMiktariDuzenle() {
+            //var form = $('#__AjaxAntiForgeryForm');
+            //var token = $('input[name="__RequestVerificationToken"]', form).val();
+            var AlimIDForMiktar = $('#AlimIDForMiktar').val();
+            //alert('TeklifVerenEczaneGrupIdForDaGiTiCi: ' + TeklifVerenEczaneGrupIdForDaGiTiCi)
+            $.ajax({
+                type: "GET",
+                url: "../../../Kullanici/Alimim/GetAlimMiktariDuzenle",
+                data: {
+                    //  __RequestVerificationToken: token,
+                    AlimId: AlimIDForMiktar
+                },
+                //data: "{'AlimIDForALD':" + AlimIDForALD + ",'AlimDurumId':" + AlimDurumId +
+                //    ",'ExpandedForALD': " + ExpandedForALD + ",'__RequestVerificationToken':" + token + "  }",
+                //__RequestVerificationToken: token,
+                // contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (data) {
+                    //alert('success');
+
+                    //alert(data)
+                    //location.reload();
+                    // $("#miktarDuzenle").html(data);
+                    // alert('partial: ' + $("#maximumMiktar").val());
+                },
+                error: function (request, textStatus, thrownError) {
+                    alert(request.status);
+                    alert(thrownError);
+                    //location.reload();
+                }
+            });
+            // $('#formALD').submit();
+            //location.reload();
+        }
+        function getAlimMiktariMax() {
+            var AlimIDForMiktar = $('#AlimIDForMiktar').val();
+            $.ajax({
+                type: "GET",
+                url: "../../../Kullanici/Alimim/GetAlimMiktariMax",
+                data: {
+                    AlimId: AlimIDForMiktar,
+                    page: 0
+                },
+                dataType: "html",
+                success: function (data) {
+                    //alert('data :' + data)
+                    $("#maximumMiktar").val(data);
+                    $("#labelMaximum").val(data);
+
+                    //alert('partial in : ' + $("#maximumMiktar").val());
+
+                },
+                error: function (request, textStatus, thrownError) {
+                    alert(request.status);
+                    alert(thrownError);
+                }
+            });
+        }
+        function getAlimMiktariMin() {
+            var AlimIDForMiktar = $('#AlimIDForMiktar').val();
+            $.ajax({
+                type: "GET",
+                url: "../../../Kullanici/Alimim/GetAlimMiktariMin",
+                data: {
+                    AlimId: AlimIDForMiktar,
+                    page: 0
+                },
+                dataType: "html",
+                success: function (data) {
+                    // alert(data)
+                    $("#minimumMiktar").val(data);
+                    $("#labelMinimum").val(data);
+
+                    // alert($("#minimumMiktar").val())
+                },
+                error: function (request, textStatus, thrownError) {
+                    alert(request.status);
+                    alert(thrownError);
+                }
+            });
+        }
+        function getDagitici() {
+            //var form = $('#__AjaxAntiForgeryForm');
+            //var token = $('input[name="__RequestVerificationToken"]', form).val();
+            var TeklifVerenEczaneGrupIdForDaGiTiCi = $('#TeklifVerenEczaneGrupIdForDaGiTiCi').val();
+            //alert('TeklifVerenEczaneGrupIdForDaGiTiCi: ' + TeklifVerenEczaneGrupIdForDaGiTiCi)
+            $.ajax({
+                type: "GET",
+                url: "../../../Kullanici/Eczane/GetDagiticiDetaylar",
+                data: {
+                    //  __RequestVerificationToken: token,
+                    EczaneGrupId: TeklifVerenEczaneGrupIdForDaGiTiCi
+                },
+                //data: "{'AlimIDForALD':" + AlimIDForALD + ",'AlimDurumId':" + AlimDurumId +
+                //    ",'ExpandedForALD': " + ExpandedForALD + ",'__RequestVerificationToken':" + token + "  }",
+                //__RequestVerificationToken: token,
+                // contentType: "application/json; charset=utf-8",
+                dataType: "html",
+                success: function (data) {
+                    //alert('success');
+                    //alert(data)
+                    //location.reload();
+                    $("#dagticidetaylar").html(data);
+                },
+                error: function (request, textStatus, thrownError) {
+                    alert(request.status);
+                    alert(thrownError);
+                    //location.reload();
+                }
+            });
+            // $('#formALD').submit();
+            //location.reload();
+        }
+
+        $('#btnExceleAktar').click(function () {
+            // alert('ConfirmSubmit')
+            exportToExcel();
+            //location.reload();
+        });
+        function exportToExcel() {
+            var htmls = "";
+            var uri = 'data:application/vnd.ms-excel;base64,';
+            var template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>';
+            var base64 = function (s) {
+                return window.btoa(unescape(encodeURIComponent(s)))
+            };
+
+            var format = function (s, c) {
+                return s.replace(/{(\w+)}/g, function (m, p) {
+                    return c[p];
+                })
+            };
+
+            htmls = $("table").html();
+
+            var ctx = {
+                worksheet: 'Worksheet',
+                table: htmls
+            }
+
+            var link = document.createElement("a");
+            link.download = "export.xls";
+            link.href = uri + base64(format(template, ctx));
+            link.click();
+        }
+        $("#main #gridT > tbody > tr > td ").dblclick(function () {//başlıktaki check ile tüm teklifler check edilir, alımlar edilmez
+
+            //alert('cell Clicked')
+            var subTr_id = this.id;
+            //alert('subTr_id: ' + subTr_id)
+
+            var ekranIDForCHD = subTr_id.substr(4, subTr_id.length - 4);
+            var alanAdi = subTr_id.substr(0, 3);
+            if (alanAdi == "chd") {//teklif durumu
+                //alert('alanAdi: ' + alanAdi)
+                $('#EkranIDForCHD').val(ekranIDForCHD);
+                $('#myCihazDurumModal').modal('toggle');
+            }
+            else {
+                // alert('Bu alanı değiştiremezsiniz');
+            }
+
+        });
+        function postCihazDurum() {
+            // var form = $('#__AjaxAntiForgeryForm');
+            //var token = $('input[name="__RequestVerificationToken"]', form).val();
+            var cihazDurumId = $('#cihazDurumId').val(); //* 100 / $(window).height();;
+            var ekranIDForCHD = $('#EkranIDForCHD').val();
+            $.ajax({
+                type: "POST",
+                url: "../../../EczaneNobet/Ekran/SetCihazDurum",
+                data: {
+                    // __RequestVerificationToken: token,
+                    cihazDurumId: cihazDurumId,
+                    ekranId: ekranIDForCHD,
+                },
+                dataType: "html",
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (request, textStatus, thrownError) {
+                    location.reload();
+                }
+            });
+            // $('#formALD').submit();
+            //location.reload();
+        }
+        function postCihazDurumTumunuYenile() {
+            // var form = $('#__AjaxAntiForgeryForm');
+            //var token = $('input[name="__RequestVerificationToken"]', form).val();
+            $.ajax({
+                type: "POST",
+                url: "../../../EczaneNobet/Ekran/SetCihazDurumTumunuYenile",
+
+                dataType: "html",
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (request, textStatus, thrownError) {
+                    location.reload();
+                }
+            });
+            // $('#formALD').submit();
+            //location.reload();
+        }
+        var pingPeriyodu
+        var minPingPeriyodu = 600000
+        $("#gridT > tbody > tr").each(function (i, el) {
+            $(this).addClass("gridtr")
+            //alert('i: ' + i)
+            var cihazDurumId = model.CihazDetaylar[i].CihazDurumId
+            //(Model.CihazDetaylar.FirstOrDefault().SonGuncellenmeTarihi.AddMinutes
+            //    (Model.CihazDetaylar.FirstOrDefault().PingPeriyodu) > DateTime.Now)
+            var pingDurumu = model.CihazDetaylar[i].SonGuncellenmeTarihi
+            console.log('pingDurumu: ' + pingDurumu)
+            pingPeriyodu = model.CihazDetaylar[i].PingPeriyodu * 60000
+            if (pingPeriyodu < minPingPeriyodu)
+                minPingPeriyodu = pingPeriyodu
+            console.log('pingPeriyodu: ' + pingPeriyodu)
+            console.log('minPingPeriyodu: ' + minPingPeriyodu)
+
+            //alert('ekranTasarimSonDegisiklikTarihi: ' + ekranTasarimSonDegisiklikTarihi)
+            //alert('cihazSonDegisiklikTarihi: ' + cihazSonDegisiklikTarihi)
+            //satırların arka plan renkleri
+            if (cihazDurumId == 1)
+                $(this).addClass("arkaPlanRengiAktif")
+            else if (cihazDurumId == 2)
+                $(this).addClass("arkaPlanRengiSayfayiYenile")
+            else if (cihazDurumId == 3)
+                $(this).addClass("arkaPlanRengiSayfayiBastanBaslat")
+            else if (cihazDurumId == 4)
+                $(this).addClass("arkaPlanRengiCihaziYenidenBaslat")
+            else if (cihazDurumId == 5)
+                $(this).addClass("arkaPlanRengiDomainDegisti")
+        });
+        setInterval(function () {
+            window.location.reload();
+        }, minPingPeriyodu); 
+    </script>
+}

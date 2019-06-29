@@ -1,0 +1,81 @@
+﻿@model Cozunurluk
+
+@{
+    ViewBag.Title = "Çözünürlük Ekle |  Dijital Ekran";
+}
+
+<h4>Çözünürlük Ekle</h4>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="card">
+        <div class="card-body">
+
+            <div class="form-row">
+                <div class="form-group col-md-10">
+                    @*@Html.LabelFor(model => model.Adi, "Eczane Adı", htmlAttributes: new { @class = "control-label" })*@
+                    @Html.EditorFor(model => model.Adi, new { htmlAttributes = new { @class = "form-control", placeHolder = "Adı" } })
+                    @Html.ValidationMessageFor(model => model.Adi, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-10">
+                    @*@Html.LabelFor(model => model.AcilisTarihi, htmlAttributes: new { @class = "control-label" })*@
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text p-2">
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        @Html.TextBoxFor(model => model.Deger, new { @class = "form-control datepicker p-2", autocomplete = "off", placeHolder = "Açılış Tarihi" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Deger, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group col-md-10">
+                    @*@Html.LabelFor(model => model.KapanisTarihi, htmlAttributes: new { @class = "control-label" })*@
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text p-2">
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        @Html.TextBoxFor(model => model.Aciklama, new { @class = "form-control datepicker p-2", autocomplete = "off", placeHolder = "Kapanış Tarihi" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Aciklama, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+          
+
+            <div class="form-group">
+                <input type="submit" value="Ekle" class="btn btn-primary" />
+                @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn btn-warning" })
+            </div>
+
+        </div>
+    </div>
+
+}
+@section Styles{
+    @Styles.Render("~/bundle/bootstrap-datepicker/style")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundle/bootstrap-datepicker/scripts")
+    @Scripts.Render("~/bundle/ajax")
+    @*@Scripts.Render("~/bundle/validation/scripts")*@
+    @*@Scripts.Render("~/bundle/globalize/scripts")*@
+
+    <script>
+        setTimeout(function () {
+            $('.alert-success').addClass("elemaniUcur");
+        }, 4000);
+        setTimeout(function () {
+            $('.alert-danger').addClass("elemaniUcur");
+        }, 4000);
+    </script>
+}

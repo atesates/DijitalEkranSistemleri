@@ -1,0 +1,57 @@
+﻿@model WM.Northwind.Entities.Concrete.EczaneNobet.Ekran
+
+@{
+    ViewBag.Title = "Ekran Sil | Dijital Ekran";
+}
+
+<h4>Ekran Sil</h4>
+<hr />
+
+<h5 class="text-danger">Silmek istediğinizden emin misiniz?</h5>
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BaslamaTarihi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BaslamaTarihi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BitisTarihi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BitisTarihi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Aciklama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Aciklama)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Sil" class="btn btn-sm btn-danger" />
+        @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn btn-sm btn-warning" })
+        <a class="btn btn-sm btn-outline-secondary"  href="@Url.Action( "Index",  "Ekran", new { id = Model.Id, area= "EczaneNobet" })">Ekranlara Dön</a>
+
+    </div>
+    }
+</div>

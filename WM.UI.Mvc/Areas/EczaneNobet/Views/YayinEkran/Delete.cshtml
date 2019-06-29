@@ -1,0 +1,48 @@
+﻿@model YayinEkranDetay
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+
+<h5 class="text-danger">Silmek istediğinizden emin misiniz?</h5>
+<div>
+    <h4>Yayın Ekran Sil</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EkranId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EkranId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EkranTasarimId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EkranTasarimId)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-sm btn-danger"   /> 
+        @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn btn-sm btn-warning" })
+
+    </div>
+    }
+</div>

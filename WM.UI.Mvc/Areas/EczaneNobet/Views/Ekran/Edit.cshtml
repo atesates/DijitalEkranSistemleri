@@ -1,0 +1,156 @@
+﻿@model WM.Northwind.Entities.Concrete.EczaneNobet.Ekran
+@{
+    ViewBag.Title = "Ekran |  Dijital Ekran";
+}
+<h4>Ekran Düzenle</h4>
+<hr />
+@if (TempData["MessageDanger"] != null)
+{
+
+    <div class="col-12">
+        <div class="alert alert-success alert-dismissible fade show mt-2" role="alert">
+            <i class="fa fa-check"></i>@TempData["MessageDanger"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="false">&times;</span>
+            </button>
+        </div>
+    </div>
+
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="card">
+        <div class="card-body">
+            <div class="form-horizontal">
+
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @*<div class="form-group">
+            @Html.LabelFor(model => model.AlimDurum, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AlimDurum, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                @Html.ValidationMessageFor(model => model.AlimDurum, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+                @*<div class="form-group">
+            @Html.LabelFor(model => model.ITStransferDurumId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("ITStransferDurumId", null, htmlAttributes: new { @class = "form-control form-control-sm" })
+                @Html.ValidationMessageFor(model => model.ITStransferDurumId, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+                <div class="form-group col-md-10">
+                    Cihaz
+                    @*@Html.LabelFor(model => model.NobetUstGrupId, "Üst Grup", htmlAttributes: new { @class = "control-label col-2" })*@
+                    @Html.DropDownList("CihazId", null, htmlAttributes: new { @class = "form-control" })
+                </div>
+                <div class="form-group col-md-10">
+                    Monitor
+                    @*@Html.LabelFor(model => model.NobetUstGrupId, "Üst Grup", htmlAttributes: new { @class = "control-label col-2" })*@
+                    @Html.DropDownList("MonitorId", null, htmlAttributes: new { @class = "form-control" })
+                </div>
+                <div class="form-group col-md-10">
+                    Konum
+                    @*@Html.LabelFor(model => model.NobetUstGrupId, "Üst Grup", htmlAttributes: new { @class = "control-label col-2" })*@
+                    @Html.DropDownList("KonumId", null, htmlAttributes: new { @class = "form-control" })
+                </div>
+      
+                <div class="form-group col-md-10">
+                    Kullanıcı
+                    @*@Html.LabelFor(model => model.NobetUstGrupId, "Üst Grup", htmlAttributes: new { @class = "control-label col-2" })*@
+                                        @Html.DropDownList("GrupId", null, htmlAttributes: new { @class = "form-control" })
+                </div>
+                <div class="form-group col-md-10">
+                    @*@Html.LabelFor(model => model.MailAdresi, htmlAttributes: new { @class = "control-label" })*@
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text p-2">
+                                <i class="fa fa-internet-explorer" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.EkranUrl, new { htmlAttributes = new { @class = "form-control", placeHolder = "Ekran Url" } })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.EkranUrl, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group col-md-10">
+                    @*@Html.LabelFor(model => model.MailAdresi, htmlAttributes: new { @class = "control-label" })*@
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text p-2">
+                                <i class="fa fa-tag" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        @Html.EditorFor(model => model.Aciklama, new { htmlAttributes = new { @class = "form-control", placeHolder = "Açıklama" } })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Aciklama, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group col-md-10">
+                    @*@Html.LabelFor(model => model.KapanisTarihi, htmlAttributes: new { @class = "control-label" })*@
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text p-2">
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                            </span>
+                        </div>
+                        @Html.TextBoxFor(model => model.BitisTarihi, new { @class = "form-control datepicker p-2", autocomplete = "off", placeHolder = "Kapanış Tarihi" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.BitisTarihi, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group" style="display:none">
+                    @Html.LabelFor(model => model.BaslamaTarihi, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.BaslamaTarihi, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                        @Html.ValidationMessageFor(model => model.BaslamaTarihi, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group" style="display:none">
+                    @Html.LabelFor(model => model.AktifMi, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.AktifMi, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                        @Html.ValidationMessageFor(model => model.AktifMi, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group" style="display:none">
+                    @Html.LabelFor(model => model.GrupId, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.GrupId, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                        @Html.ValidationMessageFor(model => model.GrupId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Kaydet" class="btn btn-sm btn-primary" />
+                        @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn btn-sm btn-warning" })
+                        <a class="btn btn-sm btn-outline-secondary" href="@Url.Action( "Index",  "Ekran", new { id = Model.Id, area= "EczaneNobet" })">Ekranlara Dön</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Styles{
+    @Styles.Render("~/bundle/jqueryui/style")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundle/queryui/scripts")
+
+    <script>
+        setTimeout(function () { $('.alert').fadeOut(3000); }, 3000);
+
+        $(".datepicker").datepicker({
+            dateFormat: "dd.mm.yy",
+            changeYear: true,
+            monthNames: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+            dayNamesMin: ["Pa", "Pt", "Sl", "Ça", "Pe", "Cu", "Ct"],
+            firstDay: 1
+        });
+
+
+    </script>
+
+}

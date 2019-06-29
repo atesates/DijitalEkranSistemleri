@@ -1,0 +1,278 @@
+﻿@model EkranTasarimIcerikDetaylarViewModel
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ekran - eniyiplan.com</title>
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <style>
+        html, body {
+            /*position: fixed;*/
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="div_body">
+
+        <div id="container" style="height:960px; width:1900px">
+            @foreach (var item in Model.EkranTasarimIcerikDetaylar.Where(w => w.EkranTasarimId == Model.EkranTasarimDetay.Id))
+            {
+                <div style="display:none">
+                    <div id="posX_@item.EkranIcerikId"></div>
+                    <div id="posY_@item.EkranIcerikId"></div>
+                    <div id="sizeX_@item.EkranIcerikId"></div>
+                    <div id="sizeY_@item.EkranIcerikId"></div>
+                    <div id="veri_@item.EkranIcerikId" class="model">@item.EkranIcerikId,@item.BoyutX,@item.BoyutY,@item.KoordinatX,@item.KoordinatY;</div>
+                </div>
+
+                if (item.Uzanti == "png" || item.Uzanti == "jpg" || item.Uzanti == "jpeg")
+                {
+
+                    <div class="resize" id="@item.EkranIcerikId">
+                        <img src="@Url.Content(item.Url + "." + item.Uzanti)" style="width:100%; height:100%" />
+                    </div>
+                }
+                else if (item.Uzanti == "mp4")
+                {
+                    <video id="video" width="958" height="520" poster="foto1.jpg" controls style="display: block" onclick="playVideo()" autoplay loop>
+                        <source src="video1.mp4" type="video/mp4" />
+                        <source src="video1.webm" type="video/webm" />
+                        <source src="video1.ogv" type="video/ogg" />
+                        <!--[if gt IE 6]>
+                        <object width="958" height="520" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"><!
+                        [endif]-->
+                        <!--[if !IE]><!--558" type="video/quicktime" data="video1.mp4"><!--<![endif]-->
+                        <param name="src" value="video1.mp4" />
+                        <param name="autoplay" value="false" />
+                        <param name="showlogo" value="true" />
+                        <object width="958" height="520" type="application/x-shockwave-flash"
+                                data="SINAV.swf?EF.jpg&amp;file=video1.mp4">
+                            <param name="movie" value="SINAV.swf?image=EF.png&amp;file=video1.mp4" />
+                            <img src="foto1.jpg" width="958" height="520" />
+                            <p>
+                                <strong>No video playback capabilities detected.</strong>
+                                Why not try to download the file instead?<br />
+                                <a href="video1.mp4">MPEG4 / H.264 “.mp4” (Windows / Mac)</a> |
+                                <a href="Ef.ogv">Ogg Theora &amp; Vorbis “.ogv” (Linux)</a>
+                            </p>
+                        </object><!--[if gt IE 6]><!-->
+
+                    </video>
+                }
+                else
+                {
+
+                    <div class="resize" id="@item.EkranIcerikId">
+                        <iframe id="iFrameDialog" class="site" style="width:100%; height:100%" src="@Url.Content(item.Url)"></iframe>
+                    </div>
+
+                }
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-1">
+            <input type="submit" id="kaydet" class="btn btn-sm btn-success"
+                   value="Tasarımı Kaydet" />
+        </div>
+
+
+        <div class="col-3">
+            @Html.ActionLink("Tasarımlara Dön", "Index", "EkranTasarim", null, new { @class = "btn btn-sm btn-warning" })
+            <a class="btn btn-sm btn-outline-secondary" href="@Url.Action( "Index",  "Ekran", new { area= "EczaneNobet" })">Ekranlara Dön</a>
+
+
+        </div>
+    </div>
+
+    <div id="div_test" style="visibility:visible">
+
+    </div>
+    @Html.Hidden("koordinatX")
+    @Html.Hidden("koordinatY")
+    @Html.Hidden("boyutY")
+    @Html.Hidden("boyutX")
+    @Html.Hidden("ekranIcerikId")
+
+
+</body>
+</html>
+
+
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script>
+
+    //$(function () {
+    $(document).ready(function () {
+        var modelim = @Html.Raw(Json.Encode(Model));
+        console.log($(window).height())
+        console.log($(window).width())
+        console.log(modelim.EkranTasarimDetay.Id)
+        console.log(modelim.EkranTasarimIcerikDetaylar[0].BoyutX)
+        //$('#container').css({ width: $(window).width() })
+        //$('#container').css({ height: $(window).height() })
+        var X = $(window).width()///9*8//8.077,
+            Y = $(window).height()///9*8//8.075;
+        //X = 1360 ;
+        //Y = 765;
+        $("#div_body").width(X);
+        $("#div_body").height(Y);
+        $('#div_body').css('border', '2px solid black');
+        //$('#kaydet').css({ position: "absolute", top: Y + 'px' });
+        //$('#div_test').css({ position: "absolute", top: Y + 50 + 'px' });
+        //$('#btnGeriDon').css({ position: "absolute", top: Y + 1 + 'px', left: X/1.3 });
+
+        function printMousePos(event) {
+            document.getElementById("div_test").innerHTML =
+                "clientX: " + event.clientX +
+                " - clientY: " + event.clientY;
+        }
+
+       // document.addEventListener("click", printMousePos);
+
+        var model
+        $('.model').each(function (i, obj) {
+            model = $('.model').text();
+        });
+
+        function parseModel(model, id) {
+            var arrayOfStrings = model.split(';');
+            //console.log('arrayOfStrings: ' + arrayOfStrings)
+            for (var i = 0; i < arrayOfStrings.length; i++) {
+                var arrayOfStrings2 = arrayOfStrings[i].split(',');
+                //console.log('arrayOfStrings2: ' + arrayOfStrings2)
+                if (id == arrayOfStrings2[0])
+                    return arrayOfStrings2
+            }
+        }
+        initialize()
+        function initialize() {
+            $('.resize').each(function (i, obj) {
+                var id = jQuery(this).attr("id")
+                console.log('id: ' + id)
+                var result = parseModel(model, id);
+                $('#sizeX_' + id).text(result[1] )
+                $('#sizeY_' + id).text(result[2] )
+                $('#posX_' + id).text(result[3] )
+                $('#posY_' + id).text(result[4] )
+
+                //$('#' + id).css({ position: "absolute", left: result[3] / 9 * 8 + '%'});
+                //$('#' + id).css({ position: "absolute", top: result[4] / 9 * 8 + '%'});
+                //$('#' + id).width(result[1] / 9 * 8 + '%');
+                //$('#' + id).height(result[2] / 9 * 8 + '%');
+
+                $('#' + id).css({ position: "absolute", left: result[3]  + '%' });
+                $('#' + id).css({ position: "absolute", top: result[4] + '%' });
+                $('#' + id).width(result[1] + '%');
+                $('#' + id).height(result[2] + '%');
+            });
+        }
+        //console.log(result)
+       // parseModel(model, 4);
+        // alert($(window).width());
+        //alert($(window).height());
+        // $('#formEkranDigitalYonetim').submit();
+        var icerikler = ".";
+
+        $("#kaydet").click(function (e) {
+            $('.resize').each(function (i, obj) {
+                var id = jQuery(this).attr("id")
+                icerikler = icerikler + id
+                    + "," + $('#posX_' + id).text()
+                    + "," + $('#posY_' + id).text()
+                    + "," + $('#sizeX_' + id).text()
+                    + "," + $('#sizeY_' + id).text() + ";"
+            });
+            var ekranTasarimId = modelim.EkranTasarimDetay.Id
+            postEkranIcerik(icerikler, ekranTasarimId)
+        });
+
+        //var tiklananEleman;
+        //jQuery(".resize").mouseover(function () {
+        //    var contentPanelId = jQuery(this).attr("id");
+        //    //alert('contentPanelId: ' + contentPanelId);
+        //    tiklananEleman = contentPanelId;
+        //    //alert('tiklananEleman: ' + tiklananEleman)
+        //});
+
+        function postEkranIcerik(pr_iceriklerim, pr_ekranTasarimId) {
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+            $.ajax({
+                type: "POST",
+                url: "../../../EczaneNobet/EkranDigitalYonetim/SetEkranIcerik",
+                data: {
+                    //__RequestVerificationToken: token,
+                    pr_ekranIcerik: pr_iceriklerim,
+                    pr_ekranTasarimId: pr_ekranTasarimId
+                },
+                dataType: "html",
+                success: function (data) {
+                    alert('Kaydedildi');
+                },
+                error: function (request, textStatus, thrownError) {
+                    //alert('error');
+                    alert(textStatus + '! ' + thrownError)
+
+                }
+            });
+            // $('#formALD').submit();
+            //location.reload();
+        }
+
+        $(".resize").resizable({
+            stop: function (event, ui) {
+                var w = ui.size.width * 100 / X ;
+                var h = ui.size.height * 100 / Y ;
+                var elementId = $(this).attr('id');
+                //alert(elementId)
+                $('#sizeX_' + elementId).text(w);
+                $('#sizeY_' + elementId).text(h);
+            }
+        });
+
+        $('.resize').draggable({
+            stop: function () {
+                var offset = $(this).offset();
+                var xPos = offset.left * 100 / X ;
+                var yPos = offset.top * 100 / Y ;
+                var elementId = $(this).attr('id');
+
+                $('#posX_' + elementId).text(xPos);
+                $('#posY_' + elementId).text(yPos);
+            }
+        });
+
+        $(".resize").resizable({
+            //handles: "se",
+            ghost: true,
+            containment: "#container",
+            //alsoResize: "#hemsireCizelgeleme2 img"
+        })
+            .draggable({
+                cursor: "move",
+                containment: "#container",
+            });
+            //.find(".ui-resizable-handle").hide();
+
+        //$(".resize").find("div.ui-resizable-se").removeClass("ui-icon");
+        //$(".resize").find("div.ui-resizable-se").removeClass("ui-icon-gripsmall-diagonal-se");
+
+    });
+
+    </script>
+
+

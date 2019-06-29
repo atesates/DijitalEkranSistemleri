@@ -1,0 +1,30 @@
+﻿@model EkranIcerik
+@{
+    ViewBag.Title = "Foto Yükleme";
+}
+
+<div class="page-header">
+    <h2>@ViewBag.Title</h2>
+</div>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data" }))//resim uploadı için
+{
+
+    @Html.Hidden("EkranIcerikid", Model.Id)
+    @*<div class="form-group">
+            @Html.LabelFor(model => model.Oyuncu_adi, new { @class = "control-label" })
+            @Html.TextBoxFor(model => model.Oyuncu_adi, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Oyuncu_adi, "", new { @class = "text-danger" })
+        </div>*@
+    <div class="form-group">
+        <input  type="file" name="file" id="file" style="width: 100%;" />
+    </div>
+    <button class="btn btn-sm btn-primary" type="submit">Yükle</button>
+}
+
+
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

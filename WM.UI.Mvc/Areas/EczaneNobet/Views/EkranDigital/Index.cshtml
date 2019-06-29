@@ -1,0 +1,346 @@
+﻿@model EkranTasarimIcerikDetaylarViewModel
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ekran - nobetyaz.com</title>
+    <link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+    <style>
+
+        /*.site {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }*/
+        html, body {
+            /*position: fixed;*/
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            overflow-y: hidden;
+        }
+        /*html {
+            margin: 0px;
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            margin: 0px;
+            min-height: 100%;
+            width: 100%;
+        }*/
+
+        /*.resize {
+            height: 200px;
+            width: 350px;
+            border: 1px solid black;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }*/
+
+    </style>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div id="container">
+
+        @foreach (var item in Model.EkranTasarimIcerikDetaylar.Where(w => w.EkranTasarimId == Model.EkranTasarimDetay.Id))
+        {
+            <div style="display:none">
+                <div id="posX_@item.EkranIcerikId"></div>
+                <div id="posY_@item.EkranIcerikId"></div>
+                <div id="sizeX_@item.EkranIcerikId"></div>
+                <div id="sizeY_@item.EkranIcerikId"></div>
+                <div id="veri_@item.EkranIcerikId" class="model">@item.EkranIcerikId,@item.BoyutX,@item.BoyutY,@item.KoordinatX,@item.KoordinatY;</div>
+            </div>
+
+            if (item.Uzanti == "png" || item.Uzanti == "jpg" || item.Uzanti == "jpeg")
+            {
+
+                <div class="resize" id="@item.EkranIcerikId">
+                    <img src="@Url.Content(item.Url + "." + item.Uzanti)" style="width:100%; height:100%" />
+                </div>
+            }
+            else if (item.Uzanti == "mp4")
+            {
+                <video id="video" width="958" height="520" poster="foto1.jpg" controls style="display: block" onclick="playVideo()" autoplay loop>
+                    <source src="video1.mp4" type="video/mp4" />
+                    <source src="video1.webm" type="video/webm" />
+                    <source src="video1.ogv" type="video/ogg" />
+                    <!--[if gt IE 6]>
+                <object width="958" height="520" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"><!
+                [endif]-->
+                    <!--[if !IE]><!--558" type="video/quicktime" data="video1.mp4"><!--<![endif]-->
+                    <param name="src" value="video1.mp4" />
+                    <param name="autoplay" value="false" />
+                    <param name="showlogo" value="true" />
+                    <object width="958" height="520" type="application/x-shockwave-flash"
+                            data="SINAV.swf?EF.jpg&amp;file=video1.mp4">
+                        <param name="movie" value="SINAV.swf?image=EF.png&amp;file=video1.mp4" />
+                        <img src="foto1.jpg" width="958" height="520" />
+                        <p>
+                            <strong>No video playback capabilities detected.</strong>
+                            Why not try to download the file instead?<br />
+                            <a href="video1.mp4">MPEG4 / H.264 “.mp4” (Windows / Mac)</a> |
+                            <a href="Ef.ogv">Ogg Theora &amp; Vorbis “.ogv” (Linux)</a>
+                        </p>
+                    </object><!--[if gt IE 6]><!-->
+
+                </video>
+            }
+            else
+            {
+
+                <div class="resize" id="@item.EkranIcerikId">
+                    <iframe id="iFrameDialog" class="site" style="width:100%; height:100%" src="@Url.Content(item.Url + "|?&autoplay=1")"></iframe>
+                </div>
+
+            }
+            @*<iframe id="tt" width="560" height="315" src="http://www.youtube.com/embed/GRonxog5mbw?autoplay=1&loop=1&playlist=GRonxog5mbw"
+            frameborder="0" allowfullscreen></iframe>*@
+
+        }
+    </div>
+
+    @Html.Hidden("koordinatX")
+    @Html.Hidden("koordinatY")
+    @Html.Hidden("boyutY")
+    @Html.Hidden("boyutX")
+    @Html.Hidden("ekranIcerikId")
+
+</body>
+</html>
+@section Scripts{
+    @Scripts.Render("~/bundle/ajax")
+    @Scripts.Render("~/bundle/bootstrap-select/scripts")
+    @Scripts.Render("~/bundle/bootstrap-datepicker/scripts")
+    @Scripts.Render("~/bundle/scriptsDetailTable/script")
+}
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+<script>
+    //$(function () {
+    $(document).ready(function () {
+   
+
+        var model = @Html.Raw(Json.Encode(Model));
+        var icerikler = ".";
+        var boyutX = model.EkranTasarimIcerikDetaylar[0].BoyutX
+        var boyutY = model.EkranTasarimIcerikDetaylar[0].BoyutY
+       
+        console.log('tasarimId: ' + model.EkranTasarimDetay.Id)
+
+
+
+        var tasarimBitisZamani = model.TasarimBitisZamani
+        var baslamaZamani = model.TasarimBaslamaZamani
+
+        //var milli = baslamaZamani.replace(/\/Date\((-?\d+)\)\//, '$1');
+        //var zaman = new Date(parseInt(milli));
+        //var year = zaman.getFullYear()
+        //var month = zaman.getMonth()
+        //var day = zaman.getMonth()
+        //var hour = zaman.getHours()
+        //var minute = zaman.getMinutes()
+        //baslamaZamani = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":00"
+        //console.log('tasarimBitisZamani: ' + tasarimBitisZamani)
+        //console.log('baslamaZamani: ' + baslamaZamani)
+        var ekranTasarimId = model.EkranTasarimDetay.Id
+        var ekranId = model.EkranDetay.Id
+        var today = new Date();
+        var saat = today.getHours();
+        var dakika = today.getMinutes();
+        var saniye = today.getSeconds();
+
+        var tasarimBitisSaati = tasarimBitisZamani.substr(8, 2)
+        var tasarimBitisDakika = tasarimBitisZamani.substr(11, 2)
+        var tasarimBitisSaniye = tasarimBitisZamani.substr(13, 2)
+
+        console.log('tasarimBitisSaati: ' + tasarimBitisSaati)
+        console.log('tasarimBitisDakika: ' + tasarimBitisDakika)
+        console.log('tasarimBitisSaniye: ' + tasarimBitisSaniye)
+        
+        if (parseInt(tasarimBitisSaati) == saat
+            && parseInt(tasarimBitisDakika) == dakika - 1
+            && parseInt(tasarimBitisSaniye) == saniye ) {
+            location.reload()
+        }
+
+
+        $('.model').each(function (i, obj) {
+            model = $('.model').text();
+        });
+        initialize()
+        yayinEkranIcerikInsert()
+             
+        function yayinEkranIcerikUpdate() {
+            console.log('yayinEkranIcerikUpdate')
+            console.log('icerikler: ' + icerikler)
+
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+            $.ajax({
+                type: "POST",
+                url: "../../../EczaneNobet/EkranDigital/SetYayinEkranIcerik",
+                data: {
+                    //__RequestVerificationToken: token,
+                    pr_ekranIcerik: icerikler,
+                    //pr_yayinEkranId: yayinEkranId,
+                    pr_ekranTasarimId: ekranTasarimId,
+                    pr_ekranId : ekranId
+                },
+                dataType: "json",
+                success: function (data) {
+                   // alert('Kaydedildi');
+                },
+                error: function (request, textStatus, thrownError) {
+                    //alert('error');
+                   // alert(textStatus + '! ' + thrownError)
+
+                }
+            });
+            console.log('function yayinEkranIcerikUpdate')
+            // $('#formALD').submit();
+            //location.reload();
+            setTimeout(function () {
+                // console.log('function seTimeOut')
+                yayinEkranIcerikUpdate()
+            }, 60000);
+            console.log('after seTimeOut')
+
+        }
+        function yayinEkranIcerikInsert() {
+            console.log('yayinEkranIcerikUpdate')
+            console.log('icerikler: ' + icerikler)
+
+            var form = $('#__AjaxAntiForgeryForm');
+            var token = $('input[name="__RequestVerificationToken"]', form).val();
+            $.ajax({
+                type: "POST",
+                url: "../../../EczaneNobet/EkranDigital/SetYayinEkranIcerikInsert",
+                data: {
+                    //__RequestVerificationToken: token,
+                    pr_ekranIcerik: icerikler,
+                    //pr_yayinEkranId: yayinEkranId,
+                    pr_ekranTasarimId: ekranTasarimId,
+                    pr_ekranId: ekranId
+                },
+                dataType: "json",
+                success: function (data) {
+                    // alert('Kaydedildi');
+                },
+                error: function (request, textStatus, thrownError) {
+                    //alert('error');
+                    // alert(textStatus + '! ' + thrownError)
+
+                }
+            });
+            // $('#formALD').submit();
+            //location.reload();
+        
+            yayinEkranIcerikUpdate()
+
+
+        }
+        @*var model = @Html.Raw(Json.Encode(Model));
+
+        console.log('model.length: ' + model.length)
+
+        for (var i = 0; i < model.length; i++) {
+
+            var cozunurluk = model[i].EkranDetay.MonitorId;
+            console.log('cozunurluk: ' + cozunurluk)
+        }*@
+
+ 
+
+        //window.addEventListener('load', function () {
+        //    var newVideo = document.getElementById('videoElementId');
+        //    newVideo.addEventListener('ended', function () {
+        //        this.currentTime = 0;
+        //        this.play();
+        //    }, false);
+
+        //    newVideo.play();
+        //});
+
+        //console.log($(window).width())
+        //console.log($(window).height())
+        //$('#container').css({ width: $(window).width() })
+        //$('#container').css({ height: $(window).height() })
+
+      
+        function parseModel(model, id) {
+            var arrayOfStrings = model.split(';');
+            for (var i = 0; i < arrayOfStrings.length; i++) {
+                var arrayOfStrings2 = arrayOfStrings[i].split(',');
+                if (id == arrayOfStrings2[0])
+                    return arrayOfStrings2
+            }
+        }
+
+        function initialize() {
+            $('.resize').each(function (i, obj) {
+                var id = jQuery(this).attr("id")
+                icerikler = icerikler + parseModel(model, id) + ";";
+                var result = parseModel(model, id);
+
+                $('#sizeX_' + id).text(result[1])
+                $('#sizeY_' + id).text(result[2])
+                $('#posX_' + id).text(result[3])
+                $('#posY_' + id).text(result[4])
+
+                $('#' + id).css({ position: "absolute", left: result[3] + '%' });
+                $('#' + id).css({ position: "absolute", top: result[4] + '%' });
+                $('#' + id).width(result[1] + '%');
+                $('#' + id).height(result[2] + '%');
+
+               // console.log('$(id).width(icerikler[1] + ' % '): ' + result[1] + '%')
+               // console.log('$(id).width(icerikler[2] + ' % '): ' + result[2] + '%')
+                console.log(result[1])
+                console.log(result[2])
+                console.log(result[3])
+                console.log(result[4])
+
+            });
+        }
+
+    });
+
+</script>
+@*
+     <div id="ytplayer"></div>
+
+     <script>
+    // Load the IFrame Player API code asynchronously.
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/player_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    // Replace the 'ytplayer' element with an <iframe> and
+    // YouTube player after the API code downloads.
+    var player;
+    function onYouTubePlayerAPIReady() {
+    player = new YT.Player('ytplayer', {
+    height: '360',
+    width: '640',
+    videoId: 'M7lc1UVf-VE',
+    playerVars: { 'autoplay': 1, 'controls': 0 },
+    });
+    }
+    </script>*@
+
+

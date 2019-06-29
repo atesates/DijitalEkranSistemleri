@@ -1,0 +1,236 @@
+﻿@model WM.Northwind.Entities.Concrete.EczaneNobet.Konum
+
+@{
+    ViewBag.Title = "Konum Düzenle |  Dijital Ekran";
+}
+<h4>Konum Düzenle</h4>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="card">
+        <div class="card-body">
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <div class="form-group col-md-10">
+                        @*@Html.LabelFor(model => model.AcilisTarihi, htmlAttributes: new { @class = "control-label" })*@
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text p-2">
+                                    <i class="fa fa-file-text" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            @Html.TextBoxFor(model => model.Adi, new { @class = "form-control", autocomplete = "off", placeHolder = "Adı" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Adi, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group col-md-10">
+                        @*@Html.LabelFor(model => model.AcilisTarihi, htmlAttributes: new { @class = "control-label" })*@
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text p-2">
+                                    <i class="fa fa-tag" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            @Html.TextBoxFor(model => model.Aciklama, new { @class = "form-control", autocomplete = "off", placeHolder = "Açıklama" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Aciklama, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group col-md-10">
+                        Kullanıcı
+                        @*@Html.LabelFor(model => model.NobetUstGrupId, "Üst Grup", htmlAttributes: new { @class = "control-label col-2" })*@
+                                            @Html.DropDownList("GrupId", null, htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-10">
+                        @*@Html.LabelFor(model => model.KapanisTarihi, htmlAttributes: new { @class = "control-label" })*@
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text p-2">
+                                    <i class="fa fa-globe" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            @Html.TextBoxFor(model => model.Boylam, new { @id = "boylam", @class = "form-control", autocomplete = "off", placeHolder = "Boylam" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Boylam, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-md-10">
+                        @*@Html.LabelFor(model => model.TelefonNo, htmlAttributes: new { @class = "control-label" })*@
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text p-2">
+                                    <i class="fa fa-globe" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.Enlem, new { htmlAttributes = new { @id = "enlem", @class = "form-control", placeHolder = "Enlem" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Enlem, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-md-10">
+                        @*@Html.LabelFor(model => model.MailAdresi, htmlAttributes: new { @class = "control-label" })*@
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text p-2">
+                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.BitisTarihi, new { htmlAttributes = new { @class = "form-control datepicker p-2", placeHolder = "Bitiş Tarihi" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.BitisTarihi, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-md-10" style="display:block">
+                        @*@Html.LabelFor(model => model.MailAdresi, htmlAttributes: new { @class = "control-label" })*@
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text p-2">
+                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            @Html.EditorFor(model => model.BaslamaTarihi, new { htmlAttributes = new { @class = "form-control datepicker p-2", placeHolder = "Başlama Tarihi" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.BaslamaTarihi, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group" style="display:none">
+                        @Html.LabelFor(model => model.UserId, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.UserId, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                            @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                    <div class="form-group col-md-8">
+
+                        <div id="map" style="width: 83%; height: 300px;"></div>
+                    </div>
+                </div>
+           
+
+                <div class="form-group">
+                    <input type="submit" value="Kaydet" class="btn btn-primary" id="btnSubmitForm" />
+                    @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn btn-warning" })
+                </div>
+
+            </div>
+    </div>
+}
+
+@section Styles{
+    @Styles.Render("~/bundle/bootstrap-datepicker/style")
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundle/bootstrap-datepicker/scripts")
+    @Scripts.Render("~/bundle/ajax")
+    @*@Scripts.Render("~/bundle/validation/scripts")*@
+}
+    <script>
+        //$("#btnSubmitForm").click(function () {
+        //    $("#Enlem").text().replace(".", ",");
+        //    $("#Boylam").text().replace(".", ",");
+        //});
+ 
+
+        //function tarihDondur2(metin) {
+
+        //    var tarih = metin.split(' ', 1)[0];
+        //    var tarihTanim = tarih.split(".");
+        //    //var tarihTanim = metin.substring(0, 10).split(".");
+
+        //    yil = tarihTanim[2];
+        //    ay = tarihTanim[1];
+        //    gun = tarihTanim[0];
+
+        //    if (gun.length != 4) {
+        //        return yil + "." + ay + "." + gun;
+        //    }
+        //    else {
+        //        //alert(gun)
+        //        return metin;
+        //    }
+        //}
+
+        function myMap() {
+            //alert('1')
+            var mapCanvas = document.getElementById("map");
+            var myCenter = { lat: 39.195533, lng: 34.66287 };
+            var mapOptions = {
+                center: myCenter,
+                zoom: 5,
+                disableDefaultUI: true
+            };
+
+            var map = new google.maps.Map(mapCanvas, mapOptions);
+            var map;
+            var markers = [];
+
+           
+            var mevcutLat = $('#enlem').val()
+            var mevcutLng = $('#boylam').val()
+            mevcutLat = parseFloat(mevcutLat.replace(",", "."))
+            mevcutLng =  parseFloat(mevcutLng.replace(",", "."))
+            console.log(mevcutLat)
+            console.log(mevcutLng)
+            var mevcutLocation = { lat: mevcutLat, lng: mevcutLng }
+            addMarker(mevcutLocation);
+            // This event listener will call addMarker() when the map is clicked.
+            map.addListener('click', function (event) {
+                deleteMarkers()
+                addMarker(event.latLng);
+
+                $('#enlem').val(event.latLng.lat)
+                $('#boylam').val(event.latLng.lng)
+
+                $("#enlem").val($("#enlem").val().replace(".", ","));
+                $("#boylam").val($("#boylam").val().replace(".", ","));
+
+            });
+
+            // Adds a marker at the center of the map.
+            //addMarker(myCenter);
+
+            // Adds a marker to the map and push to the array.
+            function addMarker(location) {
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+                markers.push(marker);
+            }
+
+            function addMarker(location) {
+                var marker = new google.maps.Marker({
+                    position: location,
+                    map: map
+                });
+                markers.push(marker);
+            }
+            function setMapOnAll(map) {
+                if (markers)
+                    for (var i = 0; i < markers.length; i++) {
+                        markers[i].setMap(map);
+                    }
+            }
+            // Removes the markers from the map, but keeps them in the array.
+            function clearMarkers() {
+                setMapOnAll(null);
+            }
+            // Deletes all markers in the array by removing references to them.
+            function deleteMarkers() {
+                clearMarkers();
+                markers = [];
+            }
+
+        }
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAP29ma6oCPNwQPFdXbilDCYBKP2Gk52CE&callback=myMap">
+    </script>

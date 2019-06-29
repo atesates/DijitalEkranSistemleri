@@ -1,0 +1,136 @@
+﻿@model EkranDetay
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h4>Ekran Detaylar</h4>
+
+<hr />
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CihazId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CihazId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AktifMi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AktifMi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EkranUrl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EkranUrl)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BaslamaTarihi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BaslamaTarihi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BitisTarihi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BitisTarihi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Boylam)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Boylam)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Enlem)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Enlem)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Aciklama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Aciklama)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CihazSeriNu)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CihazSeriNu)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MonitorSeriNu)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MonitorSeriNu)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PingPeriyodu)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PingPeriyodu)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GrupAdi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GrupAdi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EkranTasarimAdi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EkranTasarimAdi)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.EkranTasarimSonDegisiklikTarihiString)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EkranTasarimSonDegisiklikTarihiString)
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Düzenle", "Edit", new { id = Model.Id }, new { @class = "btn btn-sm btn-primary" })
+    @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn btn-sm btn-warning" })
+    <a class="btn btn-sm btn-outline-secondary" href="@Url.Action( "Index",  "Ekran", new { id = Model.Id, area= "EczaneNobet" })">Ekranlara Dön</a>
+
+</p>

@@ -1,0 +1,178 @@
+﻿
+.table-hover > tbody > tr:hover {
+    background-color: #bee5eb
+}
+
+body > .container-fluid {
+    padding-bottom: 160px;
+}
+.elemaniUcur {
+    display: none
+}
+.buttonCakma {
+    cursor: pointer;
+    color: blue;
+}
+
+.hoverEffforHeader {
+    cursor: pointer;
+    /*background-image: url('../../../../Content/images/pm.png');
+    background-position-x: -7px;
+    background-repeat: no-repeat;*/
+}
+
+    .hoverEffforHeader:hover {
+        background-color: rgb(248, 242, 242);
+    }
+
+.expandmForHeader {
+    background-image: url('../../../../Content/images/pm.png');
+    background-position-x: -22px;
+    background-repeat: no-repeat;
+}
+
+.collapsemForHeader {
+    background-image: url('../../../../Content/images/pm.png');
+    background-position-x: 2px;
+    background-repeat: no-repeat;
+}
+/*.arkaPlanRengiKapandi {
+    background-color: #dadada;
+}
+
+.arkaPlanRengiBarkodsuzGonderildi {
+    background-color: #bee5eb;
+}
+
+.arkaPlanRengiBarkodluGonderildi {
+    background-color: #b8daff;
+}
+
+.arkaPlanRengiAktif {
+    background-color: #c3e6cb;
+}
+
+.arkaPlanRengiBeklemede {
+    background-color: #ffeeba;
+}
+
+.arkaPlanRengiPasif {
+    background-color: #f5c6cb;
+}
+
+.arkaPlanRengiBlue {
+    background-color: #0275d8;
+}*/
+.arkaPlanRengiSayfayiYenile {
+    background-color: #dadada;
+
+}
+
+.arkaPlanRengiSayfayiBastanBaslat {
+    background-color: #bee5eb;
+}
+.arkaPlanRengiPingYok {
+    background-color: #f5c6cb;
+}
+.arkaPlanRengiDomainDegisti {
+    background-color: #ffeeba;
+}
+
+.arkaPlanRengiAktif {
+    background-color: #c3e6cb;
+}
+
+.arkaPlanRengiCihaziYenidenBaslat {
+    background-color: #f5c6cb;
+}
+
+.arkaPlanRengiPasif {
+    background-color: #f5c6cb;
+}
+
+.arkaPlanRengiBlue {
+    background-color: #0275d8;
+}
+/*.classelement {
+    color: aqua
+}*/
+/*p{
+    color:orangered
+}*/
+#idelement {
+    color: brown
+}
+
+
+ul li a:hover {
+    color: #bee5eb
+}
+
+.jumbotron {
+    background-image: url("../Img/img7.jpg");
+    background-size: cover;
+    height: auto;
+}
+
+th, td {
+    padding: 5px;
+}
+
+th {
+    background-color: rgb(248, 248, 248);
+}
+
+#gridT, #gridT tr {
+    border: 1px solid #0D857B;
+}
+
+#subT, #subT tr {
+    border: 1px solid #f3f3f3;
+}
+
+#subT {
+    margin: 0px 0px 0px 10px;
+    padding: 5px;
+    width: 95%;
+}
+
+    #subT th {
+        font-size: 12px;
+    }
+
+.hoverEff {
+    cursor: pointer;
+}
+
+    .hoverEff:hover {
+        background-color: rgb(248, 242, 242);
+    }
+.hoverEff2 {
+    cursor: pointer;
+}
+
+    .hoverEff2:hover {
+        background-color: rgb(248, 242, 242);
+    }
+.expandm {
+    background-image: url('../../../../Content/images/pm.png');
+    background-position-x: -27px;
+    background-repeat: no-repeat;
+}
+
+.collapsem {
+    background-image: url('../../../../Content/images/pm.png');
+    background-position-x: -7px;
+    background-repeat: no-repeat;
+}
+.expandm2 {
+    background-image: url('../../../../Content/images/pm.png');
+    background-position-x: -7px;
+    background-repeat: no-repeat;
+}
+
+.collapsem2 {
+    background-image: url('../../../../Content/images/pm.png');
+    background-position-x: -27px;
+    background-repeat: no-repeat;
+}

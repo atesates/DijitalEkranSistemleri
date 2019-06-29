@@ -1,0 +1,87 @@
+﻿@model CihazDetay
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h4>Cihaz Detaylar</h4>
+
+<hr />
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Aciklama)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Aciklama)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AlimTarihi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AlimTarihi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CozunurlukAdi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CozunurlukAdi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BitisTarihi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BitisTarihi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PingPeriyodu)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PingPeriyodu)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SonGuncellenmeTarihi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SonGuncellenmeTarihi)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SeriNu)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SeriNu)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ApiUrl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApiUrl)
+        </dd>
+    </dl>
+</div>
+<p>
+  
+    @Html.ActionLink("Düzenle", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" }) 
+    @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn btn-warning" })
+</p>

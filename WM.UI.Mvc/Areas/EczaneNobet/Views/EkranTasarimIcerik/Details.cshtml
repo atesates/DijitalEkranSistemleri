@@ -1,0 +1,53 @@
+﻿@model EkranTasarimIcerikDetay
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h4>Ekran Detaylar</h4>
+
+<hr />
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.EkranIcerikAdi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EkranIcerikAdi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EkranTasarimAdi)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EkranTasarimAdi)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Url)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Url)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Uzanti)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Uzanti)
+        </dd>
+
+    
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Düzenle", "Edit", new { id = Model.Id }, new { @class = "btn btn-sm btn-primary" })
+    @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn  btn-sm btn-warning" })
+    <a class="btn  btn-sm btn-outline-success" href="@Url.Action( "Index",  "Ekran", new {  area= "EczaneNobet" })">Ekranlara Dön</a>
+
+</p>
